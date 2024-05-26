@@ -17,15 +17,12 @@ function divide(a,b)
     return a/b;
 }
 let buttons=document.querySelector("#buttons");
-let firstNo=null,secondNo=null,operand=null,dc=0,prev,shiftf=false;
+let firstNo=null,secondNo=null,operand=null,dc=0;
 let display=document.querySelector("#display");
 document.addEventListener("keydown",function(e){kclicked(e)});
-buttons.addEventListener("click",function(e){clicked(e)});
-function clicked(e)
+buttons.addEventListener("click",function(e){bclicked(e)});
+function clicked(clName,idName,txt)
 {
-    let clName=e.target.c5lassName;
-    let idName=e.target.id;
-    let txt=e.target.textContent;
     if(clName=="number")
         {
             if(firstNo==null&&secondNo==null&&operand==null)
@@ -148,156 +145,61 @@ function clicked(e)
             operand=null;
             firstNo=null;
         }
-    prev=e;
+    else if(idName=="back")
+        {
+            console.log("back");
+            
+        }
 }
 function kclicked(e)
 {
-    let ktxt,kc;
-    if(e.keyCode==16)
+    let clName;
+    let idName;
+    let txt;
+    let kc=e.keyCode;
+    let k=e.key;
+    if(kc<=57&&kc>=48&&k!="*")
         {
-            shiftf=true;
-            return;
+            clName="number";
+            idName=k;
+            txt=k;
         }
-    if(shiftf)
+    else if(kc==191||kc==56||kc==189||(kc==187&&k!="="))
         {
-            if(e.key=="=")
-                {
-                    ktxt="+";
-                    kc=43;
-                }
-            else if(e.key=="8")
-                {
-                    ktxt="*";
-                    kc=42;
-                }
-            shiftf=false;
+            clName="operator";
+            idName=k;
+            txt=k;
         }
-    else
-    {
-        ktxt=e.key;
-        kc=e.keyCode;
-    }
-    if(clName=="number")
+    else if(kc==190)
         {
-            if(firstNo==null&&secondNo==null&&operand==null)
-                {
-                    firstNo=parseInt(txt);
-                    display.textContent=firstNo;
-                }
-            else if(secondNo==null&&operand==null)
-                {
-                    if(dc==0)
-                        {
-                            firstNo=firstNo*10+parseInt(txt);
-                            display.textContent=firstNo;
-                        }
-                    else
-                    {
-                        if(txt=="0")
-                            display.textContent=display.textContent+"0";
-                        firstNo=firstNo+parseInt(txt)/(10**dc);
-                        firstNo=Math.round(firstNo*(10**dc))/(10**dc);
-                        if(txt!="0")
-                        display.textContent=firstNo;
-                        dc++;
-                    }
-                }
-            else if(secondNo==null)
-                {
-                    secondNo=parseInt(txt);
-                    display.textContent=secondNo;
-                }
-            else
-                {
-                    if(dc==0)
-                        {
-                            secondNo=secondNo*10+parseInt(txt);
-                            display.textContent=secondNo;
-                        }
-                    else
-                    {
-                        if(txt=="0")
-                            display.textContent=display.textContent+"0";
-                        secondNo=secondNo+parseInt(txt)/(10**dc);
-                        secondNo=Math.round(secondNo*(10**dc))/(10**dc);
-                        if(txt!="0")
-                        display.textContent=secondNo;
-                        dc++;
-                    }
-                }
+            clName="decimal";
+            idName=".";
+            txt=".";
         }
-    else if(clName=="decimal")
+    else if(kc==67)
         {
-            if(dc==0)
-                {
-                    if(firstNo==null||(firstNo!=null&&operand!=null&&secondNo==null))
-                        {
-                            dc=1;
-                            display.textContent="0.";
-                        }
-                    else if(secondNo==null&&operand==null)
-                        {
-                            dc=1;
-                            display.textContent=firstNo+".";
-                        }
-                    else
-                        {
-                            dc=1;
-                            display.textContent=secondNo+".";
-                        }
-                }
+            clName="";
+            idName="C";
+            txt="C";
         }
-    else if(clName=="operator")
+    else if(kc==187)
         {
-            if(!(firstNo==null&&secondNo==null&&operand==null))
-                {
-                    if(operand=="+")
-                        firstNo=add(firstNo,secondNo);
-                    else if(operand=="-")
-                        firstNo=subtract(firstNo,secondNo);
-                    else if(operand=="*")
-                        firstNo=multiply(firstNo,secondNo);
-                    else if(operand=="/")
-                        firstNo=divide(firstNo,secondNo);
-                    if(dc==0)
-                        firstNo=Math.round(firstNo*1000)/1000;
-                    else
-                        firstNo=Math.round(firstNo*(10**dc))/(10**dc);
-                    display.textContent=firstNo;
-                    secondNo=null;
-                }
-            operand=txt;
-            dc=0;
+            clName="";
+            idName="equal";
+            txt=k;
         }
-    else if(idName=="equal")
+    else if(kc==8)
         {
-            if(!(firstNo==null&&secondNo==null&&operand==null))
-                {
-                    if(operand=="+")
-                        firstNo=add(firstNo,secondNo);
-                    else if(operand=="-")
-                        firstNo=subtract(firstNo,secondNo);
-                    else if(operand=="*")
-                        firstNo=multiply(firstNo,secondNo);
-                    else if(operand=="/")
-                        firstNo=divide(firstNo,secondNo);
-                    if(dc==0)
-                        firstNo=Math.round(firstNo*1000)/1000;
-                    else
-                        firstNo=Math.round(firstNo*(10**dc))/(10**dc);
-                    display.textContent=firstNo;
-                    secondNo=null;
-                    operand=null;
-                    dc=0;
-                }
+            clName="";
+            idName="back";
+            txt="Back";
         }
-    else if(idName=="C")
-        {
-            dc=0;
-            display.textContent="";
-            secondNo=null;
-            operand=null;
-            firstNo=null;
-        }
-    prev=e;
+    clicked(clName,idName,txt);
+}
+function bclicked(e)
+{
+    let clName=e.target.className;
+    let idName=e.target.id;
+    let txt=e.target.textContent;
+    clicked(clName,idName,txt);
 }
