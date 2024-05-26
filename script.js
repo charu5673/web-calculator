@@ -16,88 +16,288 @@ function divide(a,b)
         return "Not happening :<";
     return a/b;
 }
-let firstNo=null,secondNo=null,operand=null;
-let displays=document.querySelector("#display");
 let buttons=document.querySelector("#buttons");
-function operate(a,b,op)
+let firstNo=null,secondNo=null,operand=null,dc=0,prev,shiftf=false;
+let display=document.querySelector("#display");
+document.addEventListener("keydown",function(e){kclicked(e)});
+buttons.addEventListener("click",function(e){clicked(e)});
+function clicked(e)
 {
-    switch(op)
+    let clName=e.target.c5lassName;
+    let idName=e.target.id;
+    let txt=e.target.textContent;
+    if(clName=="number")
         {
-            case '+':return(add(a,b));break;
-            case '-':return(subtract(a,b));break;
-            case '/':return(divide(a,b));break;
-            case '*':return(multiply(a,b));break;
-        }
-}
-buttons.addEventListener("click",function(e){display(e)});
-function display(e)
-{
-            if(e.target.id=="C")
+            if(firstNo==null&&secondNo==null&&operand==null)
                 {
-                    displays.textContent="";
-                    firstNo=null;
+                    firstNo=parseInt(txt);
+                    display.textContent=firstNo;
+                }
+            else if(secondNo==null&&operand==null)
+                {
+                    if(dc==0)
+                        {
+                            firstNo=firstNo*10+parseInt(txt);
+                            display.textContent=firstNo;
+                        }
+                    else
+                    {
+                        if(txt=="0")
+                            display.textContent=display.textContent+"0";
+                        firstNo=firstNo+parseInt(txt)/(10**dc);
+                        firstNo=Math.round(firstNo*(10**dc))/(10**dc);
+                        if(txt!="0")
+                        display.textContent=firstNo;
+                        dc++;
+                    }
+                }
+            else if(secondNo==null)
+                {
+                    secondNo=parseInt(txt);
+                    display.textContent=secondNo;
+                }
+            else
+                {
+                    if(dc==0)
+                        {
+                            secondNo=secondNo*10+parseInt(txt);
+                            display.textContent=secondNo;
+                        }
+                    else
+                    {
+                        if(txt=="0")
+                            display.textContent=display.textContent+"0";
+                        secondNo=secondNo+parseInt(txt)/(10**dc);
+                        secondNo=Math.round(secondNo*(10**dc))/(10**dc);
+                        if(txt!="0")
+                        display.textContent=secondNo;
+                        dc++;
+                    }
+                }
+        }
+    else if(clName=="decimal")
+        {
+            if(dc==0)
+                {
+                    if(firstNo==null||(firstNo!=null&&operand!=null&&secondNo==null))
+                        {
+                            dc=1;
+                            display.textContent="0.";
+                        }
+                    else if(secondNo==null&&operand==null)
+                        {
+                            dc=1;
+                            display.textContent=firstNo+".";
+                        }
+                    else
+                        {
+                            dc=1;
+                            display.textContent=secondNo+".";
+                        }
+                }
+        }
+    else if(clName=="operator")
+        {
+            if(!(firstNo==null&&secondNo==null&&operand==null))
+                {
+                    if(operand=="+")
+                        firstNo=add(firstNo,secondNo);
+                    else if(operand=="-")
+                        firstNo=subtract(firstNo,secondNo);
+                    else if(operand=="*")
+                        firstNo=multiply(firstNo,secondNo);
+                    else if(operand=="/")
+                        firstNo=divide(firstNo,secondNo);
+                    if(dc==0)
+                        firstNo=Math.round(firstNo*1000)/1000;
+                    else
+                        firstNo=Math.round(firstNo*(10**dc))/(10**dc);
+                    display.textContent=firstNo;
+                    secondNo=null;
+                }
+            operand=txt;
+            dc=0;
+        }
+    else if(idName=="equal")
+        {
+            if(!(firstNo==null&&secondNo==null&&operand==null))
+                {
+                    if(operand=="+")
+                        firstNo=add(firstNo,secondNo);
+                    else if(operand=="-")
+                        firstNo=subtract(firstNo,secondNo);
+                    else if(operand=="*")
+                        firstNo=multiply(firstNo,secondNo);
+                    else if(operand=="/")
+                        firstNo=divide(firstNo,secondNo);
+                    if(dc==0)
+                        firstNo=Math.round(firstNo*1000)/1000;
+                    else
+                        firstNo=Math.round(firstNo*(10**dc))/(10**dc);
+                    display.textContent=firstNo;
                     secondNo=null;
                     operand=null;
-                }
-    else if(firstNo==null&&secondNo==null&&operand==null)
-        {
-            if(e.target.className=="number")
-                {
-            firstNo=parseInt(e.target.textContent);
-            displays.textContent=firstNo;
+                    dc=0;
                 }
         }
-    else if(secondNo==null&&operand==null)
+    else if(idName=="C")
         {
-            if(e.target.className=="number")
-                {
-                    firstNo=firstNo*10+parseInt(e.target.textContent);
-                    displays.textContent=firstNo;
-                }
-            else if(e.target.className=="operator")
-                {
-                    operand=e.target.textContent;
-                }
+            dc=0;
+            display.textContent="";
+            secondNo=null;
+            operand=null;
+            firstNo=null;
         }
-    else if(secondNo==null)
+    prev=e;
+}
+function kclicked(e)
+{
+    let ktxt,kc;
+    if(e.keyCode==16)
         {
-            if(e.target.className=="number")
-            {
-            secondNo=parseInt(e.target.textContent);
-            displays.textContent=secondNo;
-            }
+            shiftf=true;
+            return;
+        }
+    if(shiftf)
+        {
+            if(e.key=="=")
+                {
+                    ktxt="+";
+                    kc=43;
+                }
+            else if(e.key=="8")
+                {
+                    ktxt="*";
+                    kc=42;
+                }
+            shiftf=false;
         }
     else
+    {
+        ktxt=e.key;
+        kc=e.keyCode;
+    }
+    if(clName=="number")
         {
-            if(e.target.className=="number")
+            if(firstNo==null&&secondNo==null&&operand==null)
                 {
-            secondNo=secondNo*10+parseInt(e.target.textContent);
-            displays.textContent=secondNo;
+                    firstNo=parseInt(txt);
+                    display.textContent=firstNo;
                 }
-            else if(e.target.className=="operator")
-            {
-                firstNo=operate(firstNo,secondNo,operand);
-                secondNo=null;
-                operand=e.target.textContent;
-                if(typeof(firstNo)=="number")
-                firstNo=Math.round(firstNo*1000)/1000;
-                displays.textContent=firstNo;
-                    if(typeof(firstNo)!="number")
-                        firstNo=null;
-            }
-            else if(e.target.id=="="&&firstNo!=null&&secondNo!=undefined&&secondNo!=null&&firstNo!=undefined&&operand!=null)
+            else if(secondNo==null&&operand==null)
                 {
-                    firstNo=operate(firstNo,secondNo,operand);
-                    secondNo=null;
-                    operand=null;
-                if(typeof(firstNo)=="number")
-                firstNo=Math.round(firstNo*1000)/1000;
-                    displays.textContent=firstNo;
-                    if(typeof(firstNo)!="number")
-                        firstNo=null;
+                    if(dc==0)
+                        {
+                            firstNo=firstNo*10+parseInt(txt);
+                            display.textContent=firstNo;
+                        }
+                    else
+                    {
+                        if(txt=="0")
+                            display.textContent=display.textContent+"0";
+                        firstNo=firstNo+parseInt(txt)/(10**dc);
+                        firstNo=Math.round(firstNo*(10**dc))/(10**dc);
+                        if(txt!="0")
+                        display.textContent=firstNo;
+                        dc++;
+                    }
                 }
-                else{
-                    displays.textContent="hello";
+            else if(secondNo==null)
+                {
+                    secondNo=parseInt(txt);
+                    display.textContent=secondNo;
+                }
+            else
+                {
+                    if(dc==0)
+                        {
+                            secondNo=secondNo*10+parseInt(txt);
+                            display.textContent=secondNo;
+                        }
+                    else
+                    {
+                        if(txt=="0")
+                            display.textContent=display.textContent+"0";
+                        secondNo=secondNo+parseInt(txt)/(10**dc);
+                        secondNo=Math.round(secondNo*(10**dc))/(10**dc);
+                        if(txt!="0")
+                        display.textContent=secondNo;
+                        dc++;
+                    }
                 }
         }
+    else if(clName=="decimal")
+        {
+            if(dc==0)
+                {
+                    if(firstNo==null||(firstNo!=null&&operand!=null&&secondNo==null))
+                        {
+                            dc=1;
+                            display.textContent="0.";
+                        }
+                    else if(secondNo==null&&operand==null)
+                        {
+                            dc=1;
+                            display.textContent=firstNo+".";
+                        }
+                    else
+                        {
+                            dc=1;
+                            display.textContent=secondNo+".";
+                        }
+                }
+        }
+    else if(clName=="operator")
+        {
+            if(!(firstNo==null&&secondNo==null&&operand==null))
+                {
+                    if(operand=="+")
+                        firstNo=add(firstNo,secondNo);
+                    else if(operand=="-")
+                        firstNo=subtract(firstNo,secondNo);
+                    else if(operand=="*")
+                        firstNo=multiply(firstNo,secondNo);
+                    else if(operand=="/")
+                        firstNo=divide(firstNo,secondNo);
+                    if(dc==0)
+                        firstNo=Math.round(firstNo*1000)/1000;
+                    else
+                        firstNo=Math.round(firstNo*(10**dc))/(10**dc);
+                    display.textContent=firstNo;
+                    secondNo=null;
+                }
+            operand=txt;
+            dc=0;
+        }
+    else if(idName=="equal")
+        {
+            if(!(firstNo==null&&secondNo==null&&operand==null))
+                {
+                    if(operand=="+")
+                        firstNo=add(firstNo,secondNo);
+                    else if(operand=="-")
+                        firstNo=subtract(firstNo,secondNo);
+                    else if(operand=="*")
+                        firstNo=multiply(firstNo,secondNo);
+                    else if(operand=="/")
+                        firstNo=divide(firstNo,secondNo);
+                    if(dc==0)
+                        firstNo=Math.round(firstNo*1000)/1000;
+                    else
+                        firstNo=Math.round(firstNo*(10**dc))/(10**dc);
+                    display.textContent=firstNo;
+                    secondNo=null;
+                    operand=null;
+                    dc=0;
+                }
+        }
+    else if(idName=="C")
+        {
+            dc=0;
+            display.textContent="";
+            secondNo=null;
+            operand=null;
+            firstNo=null;
+        }
+    prev=e;
 }
