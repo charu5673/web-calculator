@@ -148,7 +148,58 @@ function clicked(clName,idName,txt)
     else if(idName=="back")
         {
             console.log("back");
-            
+            if(secondNo==null&&operand==null)
+                {
+                    firstNo=firstNo.toString();
+                    if(dc==1)
+                        {
+                            dc=0;
+                            display.textContent=firstNo;
+                        }
+                    else
+                    {
+                    if(firstNo.length==0||firstNo=="0"||firstNo=='0.')
+                        firstNo=null;
+                    else
+                    {
+                        if(dc!=0)
+                            dc--;
+                    firstNo=firstNo.substring(0,firstNo.length-1);
+                    firstNo=firstNo*1;
+                    }
+                    display.textContent=firstNo;
+                    if(dc==1)
+                        display.textContent=display.textContent+".";
+                }
+                }
+            else if(secondNo!=null&&operand!=null)
+                {
+                    secondNo=secondNo.toString();
+                    if(dc==1)
+                        {
+                        dc=0;
+                        display.textContent=secondNo;
+                        }
+                        else
+                        {
+                    if(secondNo.length==0||secondNo=="0"||secondNo=='0.')
+                        secondNo=null;
+                    else
+                    {
+                        if(dc!=0)
+                            dc--;
+                        secondNo=secondNo.substring(0,secondNo.length-1);
+                        secondNo=secondNo*1;
+                    }
+                    display.textContent=secondNo;
+                    if(dc==1)
+                        display.textContent=display.textContent+".";
+                }
+                }
+            else if(secondNo==null&&operand!=null)
+                {
+                    operand=null;
+                }
         }
 }
 function kclicked(e)

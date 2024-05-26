@@ -2,14 +2,16 @@
     background-color:black;
     color:white;
 }
-
 button{
+    -webkit-text-stroke-color: rgb(255, 255, 255);
+    -webkit-text-stroke-width: 1px;
     font-size:20px;
     font-family:sans-serif;
     text-align:center;
     display:inline;
     border:2px solid white;
     padding:0;
+    border-radius:5px;
 }
 body{
     height:100vh;
@@ -26,6 +28,9 @@ body{
     background-color:white;
 }
 #display{
+    -webkit-text-stroke-color: rgb(255, 219, 164);
+    -webkit-text-stroke-width: 1px;
+    color:orange;
     border-radius:5px;
     font-size:24px;
     font-family:sans-serif;
@@ -77,4 +82,22 @@ body{
     width: 50px;
     height: 50px;
     flex-shrink: 0;
+}
+button:hover{
+    color:black;
+    background-color: rgb(195, 255, 126);
+    border: 4px solid black;
+    -webkit-text-stroke-color: rgb(0, 0, 0);
+}
+.number:hover{
+    color:black;
+    background-color: rgb(255, 169, 215);
+    border: 4px solid black;
+    -webkit-text-stroke-color: rgb(0, 0, 0);
+}
+.operator:hover{
+    -webkit-text-stroke-color: rgb(0, 0, 0);
+    color:rgb(0, 0, 0);
+    background-color: rgb(255, 240, 125);
+    border: 4px solid black;
 }
